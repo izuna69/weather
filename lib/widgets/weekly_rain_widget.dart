@@ -15,6 +15,7 @@ class WeeklyRainWidget extends StatelessWidget {
         color: Colors.blue[400],
         borderRadius: BorderRadius.circular(20),
       ),
+
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: forecasts.map((forecast) {
