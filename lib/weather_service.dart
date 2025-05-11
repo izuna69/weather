@@ -11,7 +11,7 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
   final Uri url = Uri.parse(
     'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
         '?serviceKey=$serviceKey'
-        '&numOfRows=10&pageNo=1&dataType=JSON'
+        '&numOfRows=100&pageNo=1&dataType=JSON'
         '&base_date=$baseDate&base_time=$baseTime'
         '&nx=$nx&ny=$ny',
   );
@@ -24,20 +24,33 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
 
     String temperature = '';
     String humidity = '';
+    String pty = '';
+    String sky = '';
 
     for (var item in items) {
-      if (item['category'] == 'T1H') {
-        temperature = item['obsrValue'];
-      } else if (item['category'] == 'REH') {
-        humidity = item['obsrValue'];
+      switch (item['category']) {
+        case 'T1H':
+          temperature = item['obsrValue'];
+          break;
+        case 'REH':
+          humidity = item['obsrValue'];
+          break;
+        case 'PTY':
+          pty = item['obsrValue'];
+          break;
+        case 'SKY':
+          sky = item['obsrValue'];
+          break;
       }
     }
 
     return {
       'temperature': temperature,
       'humidity': humidity,
+      'pty': pty,
+      'sky': sky,
     };
   } else {
-    throw Exception('날씨 데이터를 가져오는 데 실패했습니다');
+    throw Exception('날씨 정보를 가져오지 못했습니다');
   }
 }

@@ -1,4 +1,5 @@
 # 개발일지
 ## 날씨api를 얼마나 최신성있게 api를 갖져올수있나 연구목적으로 개발
-2025.05.11 시작  
-이제 다만든 작업
+2025.05.11 시작 
+
+## [UI구성](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=0-1&p=f&t=TTO0ecAmRvGPhfOm-0)
