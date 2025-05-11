@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -36,6 +37,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   String errorMessage = '';
   String currentTime = '';
   String selectedRegion = '내 위치';
+  Timer? _timer;
 
   final Map<String, Map<String, int>> regionGridMap = {
     '내 위치': {},
@@ -53,6 +55,13 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   void initState() {
     super.initState();
     fetchAllData();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => updateTime());
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   void updateTime() {
@@ -64,8 +73,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   }
 
   void fetchAllData() async {
-    updateTime();
-
     setState(() {
       temperature = '';
       humidity = '';
@@ -114,31 +121,21 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
   String getSkyText(String code) {
     switch (code) {
-      case '1':
-        return '맑음';
-      case '3':
-        return '구름 많음';
-      case '4':
-        return '흐림';
-      default:
-        return '정보 없음';
+      case '1': return '맑음';
+      case '3': return '구름 많음';
+      case '4': return '흐림';
+      default: return '정보 없음';
     }
   }
 
   String getPtyText(String code) {
     switch (code) {
-      case '0':
-        return '없음';
-      case '1':
-        return '비';
-      case '2':
-        return '비/눈';
-      case '3':
-        return '눈';
-      case '4':
-        return '소나기';
-      default:
-        return '정보 없음';
+      case '0': return '없음';
+      case '1': return '비';
+      case '2': return '비/눈';
+      case '3': return '눈';
+      case '4': return '소나기';
+      default: return '정보 없음';
     }
   }
 
