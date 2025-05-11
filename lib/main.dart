@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:intl/intl.dart';
 import 'weather_service.dart';
 import 'convert_to_grid.dart';
 import 'dust_service.dart';
@@ -33,6 +34,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   String skyState = '';
   String ptyState = '';
   String errorMessage = '';
+  String currentTime = '';
   String selectedRegion = '내 위치';
 
   final Map<String, Map<String, int>> regionGridMap = {
@@ -53,7 +55,17 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     fetchAllData();
   }
 
+  void updateTime() {
+    final now = DateTime.now();
+    final formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    setState(() {
+      currentTime = formatter.format(now);
+    });
+  }
+
   void fetchAllData() async {
+    updateTime();
+
     setState(() {
       temperature = '';
       humidity = '';
@@ -150,7 +162,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text('🕒 현재 시간: $currentTime', style: const TextStyle(fontSize: 16)),
+            const SizedBox(height: 8),
             DropdownButton<String>(
               value: selectedRegion,
               onChanged: (value) {
@@ -183,5 +198,4 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       ),
     );
   }
-
 }
