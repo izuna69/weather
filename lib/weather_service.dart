@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-Future<Map<String, String>> fetchWeatherData() async {
+Future<Map<String, String>> fetchWeatherData({required int nx, required int ny}) async {
   const String serviceKey = 't%2FhBRyIamJhuAVC5SzI2Th5gsPlEaNNymYeEoeDtHWPw71H3otVavsztRJtteMXG8OgxnJAnSQhcc%2FbFmDrqNA%3D%3D';
-  const String baseDate = '20250511'; // 오늘 날짜
-  const String baseTime = '1100'; // 11:00 발표 (현재 시각 기준으로 조절 필요)
-  const String nx = '60'; // 서울 종로구 기준
-  const String ny = '127';
+  final DateTime now = DateTime.now();
+
+  String baseDate = "${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}";
+  String baseTime = now.hour < 2 ? "0000" : "${(now.hour - 1).toString().padLeft(2, '0')}00";
 
   final Uri url = Uri.parse(
     'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
