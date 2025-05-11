@@ -27,10 +27,12 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
-dependencies:
+dependencies:                                                                                                                 ## 내가보려는 의존이들
   flutter:
     sdk: flutter
+
   http: ^0.13.6
+  intl: ^0.18.1
   geolocator: ^10.1.0  # 위치 정보 가져오는 패키지
   permission_handler: ^11.0.0 # 위치 권한 요청용
 
