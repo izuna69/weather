@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:intl/intl.dart';
-import 'weather_service.dart';
+import 'weather_service.dart' show fetchWeatherData, fetchHourlyForecast, HourlyForecast;
 import 'convert_to_grid.dart';
-import 'dust_service.dart';
-import 'drawer_menu.dart'; // ✅ 새로 만든 Drawer 파일
+import 'dust_service.dart' show fetchDustData;
+import 'drawer_menu.dart';
+
 
 void main() {
   runApp(const WeatherApp());
@@ -17,7 +18,7 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: WeatherHomePage());
+    return const MaterialApp(home: WeatherHomePage(), debugShowCheckedModeBanner: false);
   }
 }
 
@@ -40,6 +41,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   String selectedRegion = '내 위치';
 
   List<String> savedRegions = [];
+  List<HourlyForecast> hourlyForecasts = [];
 
   Timer? _timer;
   bool weatherVisible = false;
@@ -111,7 +113,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
       if (selectedRegion == '내 위치') {
         await Permission.location.request();
-        final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        final pos = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
         final grid = convertToGrid(pos.latitude, pos.longitude);
         nx = grid['nx']!;
         ny = grid['ny']!;
@@ -126,6 +129,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
       final weather = await fetchWeatherData(nx: nx, ny: ny);
       final dust = await fetchDustData(sido);
+      final hourly = await fetchHourlyForecast(nx: nx, ny: ny);
 
       setState(() {
         temperature = weather['temperature']!;
@@ -134,6 +138,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
         ptyState = getPtyText(weather['pty'] ?? '');
         pm10 = dust['pm10']!;
         pm25 = dust['pm25']!;
+        hourlyForecasts = hourly;
         weatherVisible = true;
         _controller.forward(from: 0);
       });
@@ -169,32 +174,68 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
   String getSkyText(String code) {
     switch (code) {
-      case '1': return '맑음';
-      case '3': return '구름 많음';
-      case '4': return '흐림';
-      default: return '정보 없음';
+      case '1':
+        return '맑음';
+      case '3':
+        return '구름 많음';
+      case '4':
+        return '흐림';
+      default:
+        return '정보 없음';
     }
   }
 
   String getPtyText(String code) {
     switch (code) {
-      case '0': return '없음';
-      case '1': return '비';
-      case '2': return '비/눈';
-      case '3': return '눈';
-      case '4': return '소나기';
-      default: return '정보 없음';
+      case '0':
+        return '없음';
+      case '1':
+        return '비';
+      case '2':
+        return '비/눈';
+      case '3':
+        return '눈';
+      case '4':
+        return '소나기';
+      default:
+        return '정보 없음';
     }
   }
 
-  Widget buildInfoRow(IconData icon, String label, String value, [String unit = '']) {
+  String getDustComment(String pm10Value) {
+    int value = int.tryParse(pm10Value) ?? 0;
+    if (value <= 30) return "미세먼지가 좋아요. 산책해도 괜찮아요.";
+    if (value <= 80) return "오늘은 보통이에요. 마스크는 선택입니다.";
+    return "미세먼지가 안좋아 마스크를 쓰는 걸 추천해요.";
+  }
+
+  IconData getWeatherIcon(String sky, String pty) {
+    if (pty == '1') return Icons.umbrella;
+    if (pty == '2' || pty == '3') return Icons.ac_unit;
+    if (pty == '4') return Icons.grain;
+
+    switch (sky) {
+      case '1':
+        return Icons.wb_sunny;
+      case '3':
+        return Icons.cloud_queue;
+      case '4':
+        return Icons.cloud;
+      default:
+        return Icons.help_outline;
+    }
+  }
+
+  Widget buildInfoRow(IconData icon, String label, String value,
+      [String unit = '']) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 28),
+          Icon(icon, size: 28, color: Colors.white),
           const SizedBox(width: 8),
-          Text('$label: $value$unit', style: const TextStyle(fontSize: 20)),
+          Text('$label: $value$unit',
+              style: const TextStyle(fontSize: 20, color: Colors.white)),
         ],
       ),
     );
@@ -203,51 +244,95 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('날씨 앱')),
+      backgroundColor: Colors.lightBlue[300],
+      appBar: AppBar(
+        title: const Text('WEATHER'),
+        backgroundColor: Colors.lightBlue[300],
+        elevation: 0,
+      ),
       drawer: DrawerMenu(
         savedRegions: savedRegions,
         onRegionAdded: onRegionAdded,
         onRegionSelected: onRegionSelected,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('🕒 현재 시간: $currentTime', style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 8),
-            DropdownButton<String>(
-              value: selectedRegion,
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() => selectedRegion = value);
-                  fetchAllData();
-                }
-              },
-              items: regionGridMap.keys.map((region) {
-                return DropdownMenuItem(value: region, child: Text(region));
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            if (errorVisible)
-              Text('❌ 오류: $errorMessage', style: const TextStyle(color: Colors.red)),
-            const SizedBox(height: 10),
-            if (weatherVisible)
-              SlideTransition(
-                position: _slideAnimation,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildInfoRow(Icons.thermostat, '기온', temperature, ' °C'),
-                    buildInfoRow(Icons.water_drop, '습도', humidity, ' %'),
-                    buildInfoRow(Icons.cloud, '하늘 상태', skyState),
-                    buildInfoRow(Icons.umbrella, '강수 형태', ptyState),
-                    buildInfoRow(Icons.cloud_queue, '미세먼지 (PM10)', pm10, ' ㎍/㎥'),
-                    buildInfoRow(Icons.cloud_circle, '초미세먼지 (PM2.5)', pm25, ' ㎍/㎥'),
-                  ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "📍 선택 지역: $selectedRegion",
+                style: const TextStyle(color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "다녀오실 장소와 시간을 적어주세요",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                pm10 == '' ? '' : getDustComment(pm10),
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+              const SizedBox(height: 30),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  temperature == '' ? '--°' : '$temperature°',
+                  style: const TextStyle(color: Colors.white,
+                      fontSize: 72,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-          ],
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                decoration: BoxDecoration(
+                  color: Colors.blue[400],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: hourlyForecasts.take(6).map((forecast) {
+                    final hour = forecast.time.substring(0, 2);
+                    final icon = getWeatherIcon(forecast.sky, forecast.pty);
+                    return Column(
+                      children: [
+                        Text('$hour시',
+                            style: const TextStyle(color: Colors.white)),
+                        const SizedBox(height: 8),
+                        Icon(icon, color: Colors.white),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.blue[400],
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildInfoRow(Icons.water_drop, '습도', humidity, ' %'),
+                        buildInfoRow(Icons.umbrella, '강수 형태', ptyState),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
