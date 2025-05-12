@@ -6,7 +6,14 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
   final DateTime now = DateTime.now();
 
   String baseDate = "${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}";
-  String baseTime = now.hour < 2 ? "0000" : "${(now.hour - 1).toString().padLeft(2, '0')}00";
+
+  String baseTime;
+  if (now.minute < 45) {
+    final adjusted = now.subtract(const Duration(hours: 1));
+    baseTime = "${adjusted.hour.toString().padLeft(2, '0')}00";
+  } else {
+    baseTime = "${now.hour.toString().padLeft(2, '0')}00";
+  }
 
   final Uri url = Uri.parse(
     'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst'
@@ -16,11 +23,19 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
         '&nx=$nx&ny=$ny',
   );
 
+  print("📡 요청 URL: $url");
+
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
-    final items = jsonData['response']['body']['items']['item'];
+    print("📩 응답 JSON: ${json.encode(jsonData)}");
+
+    final items = jsonData['response']?['body']?['items']?['item'];
+
+    if (items == null) {
+      throw Exception('데이터가 비어 있습니다 (items가 null)');
+    }
 
     String temperature = '';
     String humidity = '';
@@ -51,6 +66,6 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
       'sky': sky,
     };
   } else {
-    throw Exception('날씨 정보를 가져오지 못했습니다');
+    throw Exception('날씨 정보를 가져오지 못했습니다 (status code: ${response.statusCode})');
   }
 }
