@@ -149,12 +149,21 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   }
 
   void onRegionAdded(String region) {
+    if (!regionGridMap.containsKey(region)) {
+      setState(() {
+        errorMessage = '존재하지 않는 지역입니다: \$region';
+        errorVisible = true;
+      });
+      return;
+    }
     if (!savedRegions.contains(region)) {
       setState(() {
         savedRegions.add(region);
       });
     }
   }
+
+
 
   void onRegionSelected(String region) {
     if (regionGridMap.containsKey(region)) {
