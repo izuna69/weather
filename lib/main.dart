@@ -8,7 +8,6 @@ import 'convert_to_grid.dart';
 import 'dust_service.dart' show fetchDustData;
 import 'drawer_menu.dart';
 
-
 void main() {
   runApp(const WeatherApp());
 }
@@ -113,8 +112,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
       if (selectedRegion == '내 위치') {
         await Permission.location.request();
-        final pos = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high);
+        final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
         final grid = convertToGrid(pos.latitude, pos.longitude);
         nx = grid['nx']!;
         ny = grid['ny']!;
@@ -174,31 +172,21 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
   String getSkyText(String code) {
     switch (code) {
-      case '1':
-        return '맑음';
-      case '3':
-        return '구름 많음';
-      case '4':
-        return '흐림';
-      default:
-        return '정보 없음';
+      case '1': return '맑음';
+      case '3': return '구름 많음';
+      case '4': return '흐림';
+      default: return '정보 없음';
     }
   }
 
   String getPtyText(String code) {
     switch (code) {
-      case '0':
-        return '없음';
-      case '1':
-        return '비';
-      case '2':
-        return '비/눈';
-      case '3':
-        return '눈';
-      case '4':
-        return '소나기';
-      default:
-        return '정보 없음';
+      case '0': return '없음';
+      case '1': return '비';
+      case '2': return '비/눈';
+      case '3': return '눈';
+      case '4': return '소나기';
+      default: return '정보 없음';
     }
   }
 
@@ -209,33 +197,45 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     return "미세먼지가 안좋아 마스크를 쓰는 걸 추천해요.";
   }
 
+  String getDustGrade(String pm10Value) {
+    int value = int.tryParse(pm10Value) ?? 0;
+    if (value <= 30) return "좋음";
+    if (value <= 80) return "보통";
+    if (value <= 150) return "나쁨";
+    return "매우나쁨";
+  }
+
+  Color getDustColor(String grade) {
+    switch (grade) {
+      case '좋음': return Colors.blue;
+      case '보통': return Colors.green;
+      case '나쁨': return Colors.orange;
+      case '매우나쁨': return Colors.red;
+      default: return Colors.white;
+    }
+  }
+
   IconData getWeatherIcon(String sky, String pty) {
     if (pty == '1') return Icons.umbrella;
     if (pty == '2' || pty == '3') return Icons.ac_unit;
     if (pty == '4') return Icons.grain;
 
     switch (sky) {
-      case '1':
-        return Icons.wb_sunny;
-      case '3':
-        return Icons.cloud_queue;
-      case '4':
-        return Icons.cloud;
-      default:
-        return Icons.help_outline;
+      case '1': return Icons.wb_sunny;
+      case '3': return Icons.cloud_queue;
+      case '4': return Icons.cloud;
+      default: return Icons.help_outline;
     }
   }
 
-  Widget buildInfoRow(IconData icon, String label, String value,
-      [String unit = '']) {
+  Widget buildInfoRow(IconData icon, String label, String value, [String unit = '']) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Icon(icon, size: 28, color: Colors.white),
           const SizedBox(width: 8),
-          Text('$label: $value$unit',
-              style: const TextStyle(fontSize: 20, color: Colors.white)),
+          Text('$label: $value$unit', style: const TextStyle(fontSize: 20, color: Colors.white)),
         ],
       ),
     );
@@ -243,6 +243,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
+    final dustGrade = getDustGrade(pm10);
+    final dustColor = getDustColor(dustGrade);
+
     return Scaffold(
       backgroundColor: Colors.lightBlue[300],
       appBar: AppBar(
@@ -261,30 +264,25 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "📍 선택 지역: $selectedRegion",
-                style: const TextStyle(color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-              ),
+              Text("📍 선택 지역: $selectedRegion", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
-              const Text(
-                "다녀오실 장소와 시간을 적어주세요",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+              Text(
+                pm10 == '' ? '' : '미세먼지 등급: $dustGrade',
+                style: TextStyle(color: dustColor, fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 4),
               Text(
                 pm10 == '' ? '' : getDustComment(pm10),
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
+              const SizedBox(height: 4),
+
               const SizedBox(height: 30),
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   temperature == '' ? '--°' : '$temperature°',
-                  style: const TextStyle(color: Colors.white,
-                      fontSize: 72,
-                      fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 20),
@@ -301,8 +299,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                     final icon = getWeatherIcon(forecast.sky, forecast.pty);
                     return Column(
                       children: [
-                        Text('$hour시',
-                            style: const TextStyle(color: Colors.white)),
+                        Text('$hour시', style: const TextStyle(color: Colors.white)),
                         const SizedBox(height: 8),
                         Icon(icon, color: Colors.white),
                       ],
@@ -326,6 +323,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                       children: [
                         buildInfoRow(Icons.water_drop, '습도', humidity, ' %'),
                         buildInfoRow(Icons.umbrella, '강수 형태', ptyState),
+                        buildInfoRow(Icons.air, '미세먼지', pm10, ' ㎍/㎥'),
+                        buildInfoRow(Icons.air_outlined, '초미세먼지', pm25, ' ㎍/㎥'),
                       ],
                     ),
                   ),
