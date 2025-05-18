@@ -4,12 +4,9 @@
 종료일: 06/29/2025
 담당자: 김진영
 
-### 디자인 툴
+### 디자인 툴 - [피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
 
-[피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
-
-### 프로젝트 계획서
-[노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
+### 프로젝트 계획서 - [노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
 
 ### 🧾 프로젝트 소개
 
