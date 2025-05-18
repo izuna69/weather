@@ -4,6 +4,13 @@
 종료일: 06/29/2025
 담당자: 김진영
 
+### 디자인 툴
+
+[피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
+
+### 프로젝트 계획서
+[노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
+
 ### 🧾 프로젝트 소개
 
 이 앱은 Flutter를 기반으로 제작된 **모바일 날씨 애플리케이션**으로, 사용자의 현재 위치 또는 선택한 지역에 대해 다음과 같은 **실시간 기상 정보를 제공합니다.**
@@ -42,11 +49,3 @@
 
 - 시작일: 2025년 5월 11일
 - 상태: 개발 중
-
-### 디자인 툴
-
-[피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
-
-### 프로젝트 계획서
-[노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
-
