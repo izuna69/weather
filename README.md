@@ -8,7 +8,7 @@
 
 ### 프로젝트 계획서 - [노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
 
-### 프로젝트 간트차트 - [노션](https://www.notion.so/1f74f7ca3dd980519c2dee035e1325bd?v=1f74f7ca3dd98083bdc0000c4a96721a&pvs=4)
+### 프로젝트 진행도 - [간트차트](https://www.notion.so/1f74f7ca3dd980519c2dee035e1325bd?v=1f74f7ca3dd98083bdc0000c4a96721a&pvs=4)
 
 
 ### 🧾 프로젝트 소개
