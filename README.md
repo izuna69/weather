@@ -3,8 +3,7 @@
 시작일: 01/20/2025
 종료일: 02/04/2025
 우선순위: 낮음
-팀: 프로덕트 디자인
-담당자: 김진영 소프트/학생/
+담당자: 김진영
 상태: 완료
 
 ### 🧾 프로젝트 소개
@@ -46,6 +45,10 @@
 - 시작일: 2025년 5월 11일
 - 상태: 개발 중
 
-### 문서
+### 디자인 툴
 
-[https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
+[피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
+
+### 프로젝트 계획서
+[노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
+
