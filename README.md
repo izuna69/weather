@@ -6,10 +6,4 @@ a# 개발일지
 
 ## [UI구성](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=0-1&p=f&t=TTO0ecAmRvGPhfOm-0)
 
-## 이슈
-
-- UI구성, 스토리보드, 플로우차트
-- 프론트엔드 구현 및 백엔드 연결 
-- 데이터 베이스 
-- 앱 실행 안드로이드
-- 시간
+## [프로젝트에 대해](https://www.notion.so/1f74f7ca3dd980519c2dee035e1325bd?v=1f74f7ca3dd980cdb28c000ce17f0a75&pvs=4)
