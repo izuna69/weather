@@ -7,3 +7,5 @@ a# 개발일지
 ## [UI구성](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=0-1&p=f&t=TTO0ecAmRvGPhfOm-0)
 
 ## [프로젝트에 대해](https://www.notion.so/1f74f7ca3dd980519c2dee035e1325bd?v=1f74f7ca3dd980cdb28c000ce17f0a75&pvs=4)
+
+## [프로젝트 계획서](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
