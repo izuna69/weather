@@ -62,16 +62,20 @@ class _DrawerMenuState extends State<DrawerMenu> {
             ),
             const SizedBox(height: 10),
             const Divider(),
+
+            // 📁 지역 즐겨찾기 제목
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '추가된 지역',
+                  '📁 지역 즐겨찾기',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
+            const SizedBox(height: 8),
+
             Expanded(
               child: ListView.builder(
                 itemCount: widget.savedRegions.length,
