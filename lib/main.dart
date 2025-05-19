@@ -40,6 +40,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   String selectedRegion = '내 위치';
 
   List<String> savedRegions = [];
+  List<String> recentRegions = [];
+  Set<String> pinnedRegions = {};
   List<HourlyForecast> hourlyForecasts = [];
 
   Timer? _timer;
@@ -164,13 +166,22 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     }
   }
 
-
-
+  void onRegionRemoved(String region) {
+    setState(() {
+      savedRegions.remove(region);
+      pinnedRegions.remove(region);
+    });
+  }
 
   void onRegionSelected(String region) {
     if (regionGridMap.containsKey(region)) {
       setState(() {
         selectedRegion = region;
+        recentRegions.remove(region);
+        recentRegions.insert(0, region);
+        if (recentRegions.length > 5) {
+          recentRegions = recentRegions.sublist(0, 5);
+        }
       });
       fetchAllData();
     } else {
@@ -266,8 +277,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       ),
       drawer: DrawerMenu(
         savedRegions: savedRegions,
+        recentRegions: recentRegions,
+        pinnedRegions: pinnedRegions,
         onRegionAdded: onRegionAdded,
         onRegionSelected: onRegionSelected,
+        onRegionRemoved: onRegionRemoved,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -275,7 +289,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("📍 선택 지역: $selectedRegion", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+              Text("\uD83D\uDCCD 선택 지역: $selectedRegion", style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               Text(
                 pm10 == '' ? '' : '미세먼지 등급: $dustGrade',
@@ -286,13 +300,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                 pm10 == '' ? '' : getDustComment(pm10),
                 style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
-              const SizedBox(height: 4),
-
               const SizedBox(height: 30),
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  temperature == '' ? '--°' : '$temperature°',
+                  temperature == '' ? '--\u00B0' : '$temperature\u00B0',
                   style: const TextStyle(color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -310,7 +322,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                     final icon = getWeatherIcon(forecast.sky, forecast.pty);
                     return Column(
                       children: [
-                        Text('$hour시', style: const TextStyle(color: Colors.white)),
+                        Text('$hour\uC2DC', style: const TextStyle(color: Colors.white)),
                         const SizedBox(height: 8),
                         Icon(icon, color: Colors.white),
                       ],
@@ -334,8 +346,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                       children: [
                         buildInfoRow(Icons.water_drop, '습도', humidity, ' %'),
                         buildInfoRow(Icons.umbrella, '강수 형태', ptyState),
-                        buildInfoRow(Icons.air, '미세먼지', pm10, ' ㎍/㎥'),
-                        buildInfoRow(Icons.air_outlined, '초미세먼지', pm25, ' ㎍/㎥'),
+                        buildInfoRow(Icons.air, '미세먼지', pm10, ' \u33A1/\u33A1'),
+                        buildInfoRow(Icons.air_outlined, '초미세먼지', pm25, ' \u33A1/\u33A1'),
                       ],
                     ),
                   ),
