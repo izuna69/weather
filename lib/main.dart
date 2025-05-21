@@ -229,8 +229,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
   Color getDustColor(String grade) {
     switch (grade) {
-      case '좋음': return Colors.blue;
-      case '보통': return Colors.green;
+      case '좋음': return Colors.green;
+      case '보통': return Colors.yellow;
       case '나쁨': return Colors.orange;
       case '매우나쁨': return Colors.red;
       default: return Colors.white;
@@ -238,9 +238,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   }
 
   IconData getWeatherIcon(String sky, String pty) {
-    if (pty == '1') return Icons.umbrella;
-    if (pty == '2' || pty == '3') return Icons.ac_unit;
-    if (pty == '4') return Icons.grain;
+    if (pty == '1') return Icons.beach_access; // 비: 비구름 우산 아이콘
+    if (pty == '2' || pty == '3') return Icons.ac_unit; // 비/눈 또는 눈
+    if (pty == '4') return Icons.grain; // 소나기
 
     switch (sky) {
       case '1': return Icons.wb_sunny;
@@ -249,6 +249,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       default: return Icons.help_outline;
     }
   }
+
 
   Widget buildInfoRow(IconData icon, String label, String value, [String unit = '']) {
     return Padding(

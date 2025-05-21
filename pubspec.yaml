@@ -30,7 +30,7 @@ environment:
 dependencies:                                                                                                                 ## 내가보려는 의존이들
   flutter:
     sdk: flutter
-
+  weather_icons: ^3.0.0
   http: ^0.13.6
   intl: ^0.18.1
   geolocator: ^10.1.0  # 위치 정보 가져오는 패키지
