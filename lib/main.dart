@@ -7,6 +7,7 @@ import 'weather_service.dart' show fetchWeatherData, fetchHourlyForecast, Hourly
 import 'convert_to_grid.dart';
 import 'dust_service.dart' show fetchDustData;
 import 'drawer_menu.dart';
+import 'services/weather_comment_service.dart';
 
 void main() {
   runApp(const WeatherApp());
@@ -134,8 +135,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       setState(() {
         temperature = weather['temperature']!;
         humidity = weather['humidity']!;
-        skyState = getSkyText(weather['sky'] ?? '');
-        ptyState = getPtyText(weather['pty'] ?? '');
+        skyState = weather['sky'] ?? '';
+        ptyState = weather['pty'] ?? '';
         pm10 = dust['pm10']!;
         pm25 = dust['pm25']!;
         hourlyForecasts = hourly;
@@ -192,33 +193,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     }
   }
 
-  String getSkyText(String code) {
-    switch (code) {
-      case '1': return '맑음';
-      case '3': return '구름 많음';
-      case '4': return '흐림';
-      default: return '정보 없음';
-    }
-  }
-
-  String getPtyText(String code) {
-    switch (code) {
-      case '0': return '없음';
-      case '1': return '비';
-      case '2': return '비/눈';
-      case '3': return '눈';
-      case '4': return '소나기';
-      default: return '정보 없음';
-    }
-  }
-
-  String getDustComment(String pm10Value) {
-    int value = int.tryParse(pm10Value) ?? 0;
-    if (value <= 30) return "미세먼지가 좋아요. 산책해도 괜찮아요.";
-    if (value <= 80) return "오늘은 보통이에요. 마스크는 선택입니다.";
-    return "미세먼지가 안좋아 마스크를 쓰는 걸 추천해요.";
-  }
-
   String getDustGrade(String pm10Value) {
     int value = int.tryParse(pm10Value) ?? 0;
     if (value <= 30) return "좋음";
@@ -238,9 +212,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   }
 
   IconData getWeatherIcon(String sky, String pty) {
-    if (pty == '1') return Icons.beach_access; // 비: 비구름 우산 아이콘
-    if (pty == '2' || pty == '3') return Icons.ac_unit; // 비/눈 또는 눈
-    if (pty == '4') return Icons.grain; // 소나기
+    if (pty == '1') return Icons.water_drop;
+    if (pty == '2' || pty == '3') return Icons.ac_unit;
+    if (pty == '4') return Icons.grain;
 
     switch (sky) {
       case '1': return Icons.wb_sunny;
@@ -249,7 +223,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       default: return Icons.help_outline;
     }
   }
-
 
   Widget buildInfoRow(IconData icon, String label, String value, [String unit = '']) {
     return Padding(
@@ -261,6 +234,17 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
           Text('$label: $value$unit', style: const TextStyle(fontSize: 20, color: Colors.white)),
         ],
       ),
+    );
+  }
+
+  Widget getDustCommentWidget() {
+    return Text(
+      pm10 == '' ? '' : getPersonalizedComment(
+        pm10Value: pm10,
+        ptyCode: ptyState,
+        skyCode: skyState,
+      ),
+      style: const TextStyle(color: Colors.white, fontSize: 14),
     );
   }
 
@@ -297,10 +281,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                 style: TextStyle(color: dustColor, fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
-              Text(
-                pm10 == '' ? '' : getDustComment(pm10),
-                style: const TextStyle(color: Colors.white, fontSize: 14),
-              ),
+              getDustCommentWidget(),
               const SizedBox(height: 30),
               Align(
                 alignment: Alignment.centerRight,
