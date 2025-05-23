@@ -43,6 +43,8 @@
 - **http** (API 통신)
 - **기상청 초단기 실황 및 예보 API**
 - **환경부 대기질 API**
+- **Flask KoBART**
+- **Node.js 서버**
 
 ### 
 
