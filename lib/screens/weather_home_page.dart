@@ -5,9 +5,11 @@ import '../services/weather_service.dart';
 import '../services/dust_service.dart';
 import '../services/convert_to_grid.dart';
 import '../services/weather_comment_service.dart';
+import '../services/weekly_rain_service.dart';
 import '../widgets/drawer_menu.dart';
 import '../widgets/hourly_forecast_bar.dart';
 import '../widgets/weather_info_row.dart';
+import '../widgets/weekly_rain_widget.dart';
 import '../models/hourly_forecast.dart';
 import '../utils/region_grid_map.dart';
 
@@ -31,6 +33,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   List<String> recentRegions = [];
   Set<String> pinnedRegions = {};
   List<HourlyForecast> hourlyForecasts = [];
+  List<DailyRainForecast> weeklyForecasts = [];
 
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
@@ -89,6 +92,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       final weather = await fetchWeatherData(nx: nx, ny: ny);
       final dust = await fetchDustData(sido);
       final hourly = await fetchHourlyForecast(nx: nx, ny: ny);
+      final weekly = await fetchWeeklyRainForecast(nx: nx, ny: ny);
 
       setState(() {
         temperature = weather['temperature']!;
@@ -98,6 +102,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
         pm10 = dust['pm10']!;
         pm25 = dust['pm25']!;
         hourlyForecasts = hourly;
+        weeklyForecasts = weekly;
         _controller.forward(from: 0);
       });
     } catch (_) {}
@@ -245,6 +250,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              WeeklyRainWidget(forecasts: weeklyForecasts),
             ],
           ),
         ),
