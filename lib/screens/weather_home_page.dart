@@ -60,6 +60,23 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     super.dispose();
   }
 
+  Future<bool> requestLocationPermission() async {
+    final status = await Permission.location.request();
+    if (status.isGranted) {
+      return true;
+    } else if (status.isPermanentlyDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('설정에서 위치 권한을 허용해주세요.')),
+      );
+      await openAppSettings();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('위치 권한이 없으면 날씨 정보를 사용할 수 없습니다.')),
+      );
+    }
+    return false;
+  }
+
   void fetchAllData() async {
     setState(() {
       temperature = '';
@@ -75,7 +92,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       String sido;
 
       if (selectedRegion == '내 위치') {
-        await Permission.location.request();
+        final granted = await requestLocationPermission();
+        if (!granted) return;
+
         final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
         final grid = convertToGrid(pos.latitude, pos.longitude);
         nx = grid['nx']!;
@@ -107,7 +126,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       });
     } catch (_) {}
   }
-
   void onRegionAdded(String region) {
     if (!regionGridMap.containsKey(region)) return;
     if (!savedRegions.contains(region)) {
