@@ -1,16 +1,54 @@
-# weather_clean_fixed
+# Weather 앱 소개
 
-A new Flutter project.
+시작일: 05/11/2025
+종료일: 06/29/2025
+담당자: 김진영
 
-## Getting Started
+### 디자인 툴 - [피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
 
-This project is a starting point for a Flutter application.
+### 프로젝트 계획서 - [노션](https://www.notion.so/1fa4f7ca3dd9814ca017db686fb3501c?pvs=4)
 
-A few resources to get you started if this is your first Flutter project:
+### 프로젝트 진행도 - [간트차트](https://www.notion.so/1fa4f7ca3dd9806ea3a8f954c73a61cb?v=1fa4f7ca3dd981429a1c000c4c265773&pvs=4)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 🧾 프로젝트 소개
+
+이 앱은 Flutter를 기반으로 제작된 **모바일 날씨 애플리케이션**으로, 사용자의 현재 위치 또는 선택한 지역에 대해 다음과 같은 **실시간 기상 정보를 제공합니다.**
+
+- 현재 온도, 습도, 강수 형태 등 실시간 날씨
+- 시간대별 기상 예보 (아이콘 포함)
+- 미세먼지(PM10) 및 초미세먼지(PM2.5) 수치
+- 지역 즐겨찾기 및 저장 기능
+- 위치기반
+
+### 🎯 개발 목적
+
+> 기상청 공공 API를 활용하여 날씨 데이터를 얼마나 신속하고 정확하게 가져올 수 있는지를 연구하고, 사용자 친화적인 날씨 UI를 Flutter 프레임워크로 구현하는 것이 목표입니다.
+>
+
+### 🛠️ 주요 기능
+
+| 기능 | 설명 |
+| --- | --- |
+| 📍 현재 위치 기반 날씨 조회 | 위치 권한을 이용해 실시간 날씨 데이터 표시 |
+| 📁 지역 즐겨찾기 | 자주 조회할 지역을 드로어 메뉴에 저장 가능 |
+| 🌦 시간대별 예보 | 향후 몇 시간간의 날씨 예보를 아이콘과 함께 시각적으로 제공 |
+| 🌀 대기질 정보 | PM10/PM2.5 수치를 기반으로 대기 상태 등급 및 코멘트 제공 |
+| 🎨 부드러운 애니메이션 UI | 날씨 정보가 슬라이드 애니메이션으로 나타나도록 구현 |
+
+### 🧱 사용 기술 스택
+
+- **Flutter** (Dart)
+- **Geolocator**, **permission_handler** (위치 권한 처리)
+- **http** (API 통신)
+- **기상청 초단기 실황 및 예보 API**
+- **환경부 대기질 API**
+- **Flask KoBART**
+- **Node.js 서버**
+
+### 
+
+### 📅 개발 기간
+
+- 시작일: 2025년 5월 11일
+- 상태: 개발 중
