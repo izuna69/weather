@@ -1,17 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-class HourlyForecast {
-  final String time; // 예: '1500'
-  final String sky;  // '1', '3', '4'
-  final String pty;  // '0', '1', '2', '3', '4'
-
-  HourlyForecast({
-    required this.time,
-    required this.sky,
-    required this.pty,
-  });
-}
+import '../models/hourly_forecast.dart'; // ✅ 모델에서 가져옴
 
 Future<Map<String, String>> fetchWeatherData({required int nx, required int ny}) async {
   const String serviceKey = 't%2FhBRyIamJhuAVC5SzI2Th5gsPlEaNNymYeEoeDtHWPw71H3otVavsztRJtteMXG8OgxnJAnSQhcc%2FbFmDrqNA%3D%3D';
@@ -35,14 +24,10 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
         '&nx=$nx&ny=$ny',
   );
 
-  print("📡 요청 URL: $url");
-
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
     final jsonData = json.decode(response.body);
-    print("📩 응답 JSON: ${json.encode(jsonData)}");
-
     final items = jsonData['response']?['body']?['items']?['item'];
 
     if (items == null) {
