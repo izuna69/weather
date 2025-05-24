@@ -38,6 +38,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
 
+  bool _isFetching = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +80,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   }
 
   void fetchAllData() async {
+    if (_isFetching) return;
+    _isFetching = true;
+
     setState(() {
       temperature = '';
       humidity = '';
@@ -93,40 +98,69 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
       if (selectedRegion == '내 위치') {
         final granted = await requestLocationPermission();
-        if (!granted) return;
+        if (!granted) {
+          _isFetching = false;
+          return;
+        }
 
         final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-        print("📍 내 위치: ${pos.latitude}, ${pos.longitude}"); // ✅ 추가된 로그
+        print("📍 내 위치: \${pos.latitude}, \${pos.longitude}");
+
         final grid = convertToGrid(pos.latitude, pos.longitude);
         nx = grid['nx']!;
         ny = grid['ny']!;
         sido = '서울';
       } else {
         final coords = regionGridMap[selectedRegion];
-        if (coords == null) return;
+        if (coords == null) {
+          print("⚠️ 지역 좌표를 찾을 수 없음: \$selectedRegion");
+          _isFetching = false;
+          return;
+        }
         nx = coords['nx']!;
         ny = coords['ny']!;
         sido = selectedRegion;
       }
 
+      print("🌐 API 요청 시작: nx=\$nx, ny=\$ny, sido=\$sido");
+
       final weather = await fetchWeatherData(nx: nx, ny: ny);
+      print("🌦️ 날씨 데이터: \$weather");
+
       final dust = await fetchDustData(sido);
+      print("💨 미세먼지 데이터: \$dust");
+
       final hourly = await fetchHourlyForecast(nx: nx, ny: ny);
+      print("⏱️ 시간별 예보 수: \${hourly.length}");
+
       final weekly = await fetchWeeklyRainForecast(nx: nx, ny: ny);
+      print("📅 주간 예보 수: \${weekly.length}");
 
       setState(() {
-        temperature = weather['temperature']!;
-        humidity = weather['humidity']!;
+        temperature = weather['temperature'] ?? '--';
+        humidity = weather['humidity'] ?? '--';
         skyState = weather['sky'] ?? '';
         ptyState = weather['pty'] ?? '';
-        pm10 = dust['pm10']!;
-        pm25 = dust['pm25']!;
+        pm10 = dust['pm10'] ?? '--';
+        pm25 = dust['pm25'] ?? '--';
         hourlyForecasts = hourly;
         weeklyForecasts = weekly;
         _controller.forward(from: 0);
       });
-    } catch (_) {}
+
+      print("✅ UI 업데이트 완료: 온도 \$temperature°, 미세먼지 \$pm10");
+    } catch (e, stack) {
+      print("🚨 오류 발생: \$e");
+      print(stack);
+    } finally {
+      _isFetching = false;
+    }
   }
+
+
+
+
+
   void onRegionAdded(String region) {
     if (!regionGridMap.containsKey(region)) return;
     if (!savedRegions.contains(region)) {
