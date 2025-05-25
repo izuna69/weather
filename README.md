@@ -52,10 +52,15 @@
 - **Flutter** (Dart)
 - **Geolocator**, **permission_handler** (위치 권한 처리)
 - **http** (API 통신)
-- **기상청 초단기 실황 및 예보 API**
-- **환경부 대기질 API**
-- **Flask KoBART**
-- **Node.js 서버**
+- **Python**
+- **Node.js**
+
+### 🌐 API
+
+- 기상청 초단기예보 공공데이터
+- Hugging Face Space 요약 
+- Flask KoBART
+- 환경부 대기질
 
 ### 
 
