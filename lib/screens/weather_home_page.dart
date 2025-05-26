@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../services/weather_service.dart';
 import '../services/dust_service.dart';
 import '../services/convert_to_grid.dart';
 import '../services/weather_comment_service.dart';
 import '../services/weekly_rain_service.dart';
+import '../services/favorite_service.dart';
+
 import '../widgets/drawer_menu.dart';
 import '../widgets/hourly_forecast_bar.dart';
 import '../widgets/weather_info_row.dart';
 import '../widgets/weekly_rain_widget.dart';
+
 import '../models/hourly_forecast.dart';
 import '../utils/region_grid_map.dart';
 
@@ -38,11 +43,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
 
-  bool _isFetching = false;
-
   @override
   void initState() {
     super.initState();
+    loadSavedRegions();
     fetchAllData();
 
     _controller = AnimationController(
@@ -56,6 +60,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
+  Future<void> loadSavedRegions() async {
+    savedRegions = await FavoriteService.loadFavorites();
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -64,9 +73,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
   Future<bool> requestLocationPermission() async {
     final status = await Permission.location.request();
-    if (status.isGranted) {
-      return true;
-    } else if (status.isPermanentlyDenied) {
+    if (status.isGranted) return true;
+    if (status.isPermanentlyDenied) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('설정에서 위치 권한을 허용해주세요.')),
       );
@@ -80,9 +88,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   }
 
   void fetchAllData() async {
-    if (_isFetching) return;
-    _isFetching = true;
-
     setState(() {
       temperature = '';
       humidity = '';
@@ -98,68 +103,38 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
 
       if (selectedRegion == '내 위치') {
         final granted = await requestLocationPermission();
-        if (!granted) {
-          _isFetching = false;
-          return;
-        }
-
+        if (!granted) return;
         final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-        print("📍 내 위치: \${pos.latitude}, \${pos.longitude}");
-
         final grid = convertToGrid(pos.latitude, pos.longitude);
         nx = grid['nx']!;
         ny = grid['ny']!;
         sido = '서울';
       } else {
         final coords = regionGridMap[selectedRegion];
-        if (coords == null) {
-          print("⚠️ 지역 좌표를 찾을 수 없음: \$selectedRegion");
-          _isFetching = false;
-          return;
-        }
+        if (coords == null) return;
         nx = coords['nx']!;
         ny = coords['ny']!;
         sido = selectedRegion;
       }
 
-      print("🌐 API 요청 시작: nx=\$nx, ny=\$ny, sido=\$sido");
-
       final weather = await fetchWeatherData(nx: nx, ny: ny);
-      print("🌦️ 날씨 데이터: \$weather");
-
       final dust = await fetchDustData(sido);
-      print("💨 미세먼지 데이터: \$dust");
-
       final hourly = await fetchHourlyForecast(nx: nx, ny: ny);
-      print("⏱️ 시간별 예보 수: \${hourly.length}");
-
       final weekly = await fetchWeeklyRainForecast(nx: nx, ny: ny);
-      print("📅 주간 예보 수: \${weekly.length}");
 
       setState(() {
-        temperature = weather['temperature'] ?? '--';
-        humidity = weather['humidity'] ?? '--';
+        temperature = weather['temperature']!;
+        humidity = weather['humidity']!;
         skyState = weather['sky'] ?? '';
         ptyState = weather['pty'] ?? '';
-        pm10 = dust['pm10'] ?? '--';
-        pm25 = dust['pm25'] ?? '--';
+        pm10 = dust['pm10']!;
+        pm25 = dust['pm25']!;
         hourlyForecasts = hourly;
         weeklyForecasts = weekly;
         _controller.forward(from: 0);
       });
-
-      print("✅ UI 업데이트 완료: 온도 \$temperature°, 미세먼지 \$pm10");
-    } catch (e, stack) {
-      print("🚨 오류 발생: \$e");
-      print(stack);
-    } finally {
-      _isFetching = false;
-    }
+    } catch (_) {}
   }
-
-
-
-
 
   void onRegionAdded(String region) {
     if (!regionGridMap.containsKey(region)) return;
@@ -167,6 +142,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       setState(() {
         savedRegions.add(region);
       });
+      FavoriteService.saveFavorites(savedRegions);
     }
   }
 
@@ -175,6 +151,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       savedRegions.remove(region);
       pinnedRegions.remove(region);
     });
+    FavoriteService.saveFavorites(savedRegions);
   }
 
   void onRegionSelected(String region) {
@@ -213,7 +190,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     if (pty == '1') return Icons.water_drop;
     if (pty == '2' || pty == '3') return Icons.ac_unit;
     if (pty == '4') return Icons.grain;
-
     switch (sky) {
       case '1': return Icons.wb_sunny;
       case '3': return Icons.cloud_queue;
