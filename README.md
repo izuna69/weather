@@ -61,7 +61,7 @@
 
 ### 🌐 API
 
-- 기상청 초단기예보 공공데이터
+- [기상청 초단기예보 공공데이터]{https://www.data.go.kr/iim/api/selectAPIAcountView.do}
 - Hugging Face Space 요약 
 - Flask KoBART
 - 환경부 대기질
