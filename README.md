@@ -20,7 +20,7 @@
 
 | 버전   | 일자        | 주요 변경 사항                                                                 | 다운로드 |
 |--------|-------------|----------------------------------------------------------------------------------|-----------|
-| 0.2.0  | 2025-06-01  | **로컬 영속 저장 기능** 추가<br>즐겨찾기 지역이 앱을 껐다 켜도 유지됨                   | [📦 APK 다운로드]([https://github.com/users/izuna69/projects/1/views/2?layout=roadmap&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=Title](https://github.com/izuna69/weather/releases/download/0.2.0/app-release_0.2.0.apk)) |
+| 0.2.0  | 2025-06-01  | **로컬 영속 저장 기능** 추가<br>즐겨찾기 지역이 앱을 껐다 켜도 유지됨                   | [📦 APK 다운로드](https://github.com/izuna69/weather/releases/download/0.2.0/app-release_0.2.0.apk) |
 | 0.1.1  | 2025-06-01  | 위치 기반 날씨, 미세먼지 정보, 시간별 예보, 주간 예보, 지역 즐겨찾기 기능 포함             | [📦 APK 다운로드](https://github.com/izuna69/weather/releases/download/Main/app-release_0.1.1.zip) |
 
 
