@@ -10,7 +10,7 @@
         android:label="weather"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true">>
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".MainActivity"
@@ -35,6 +35,17 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <!-- ✅ 위젯 등록 -->
+        <receiver android:name=".WeatherWidget" android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info" />
+        </receiver>
+
     </application>
 
     <queries>
