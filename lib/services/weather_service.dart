@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart'; // ✅ SharedPreferences 직접 사용
 import '../models/hourly_forecast.dart';
 import '../utils/region_grid_map.dart';
 
 Future<Map<String, String>> fetchWeatherData({required int nx, required int ny}) async {
-  const String serviceKey = 't%2FhBRyIamJhuAVC5SzI2Th5gsPlEaNNymYeEoeDtHWPw71H3otVavsztRJtteMXG8OgxnJAnSQhcc%2FbFmDrqNA%3D%3D';
+  const String serviceKey = 't%2FhBRyIamJhuAVC5SzI2Th5gsPlEaNNymYeEoeDtHWPw71H3otVavsztRJtteMXG8OgxnJAnSQhcc%2FbFmDrqNA%3D%3D'; //니 토큰 넣어야 함
   final DateTime now = DateTime.now();
 
   final cutoff = now.subtract(const Duration(minutes: 45));
@@ -55,6 +56,11 @@ Future<Map<String, String>> fetchWeatherData({required int nx, required int ny})
           break;
       }
     }
+
+    // ✅ 위젯용 요약 문자열 저장
+    final prefs = await SharedPreferences.getInstance();
+    final summary = "온도: $temperature°C\n습도: $humidity%\n하늘: ${skyStatus(sky)}\n강수: ${ptyStatus(pty)}";
+    await prefs.setString('widget_weather', summary);
 
     return {
       'temperature': temperature,
@@ -119,5 +125,25 @@ Future<List<HourlyForecast>> fetchHourlyForecast({required int nx, required int 
   } else {
     print("❌ 시간별 예보 실패: statusCode=${response.statusCode}, body=${response.body}");
     throw Exception('시간별 예보를 가져오지 못했습니다');
+  }
+}
+
+String skyStatus(String code) {
+  switch (code) {
+    case '1': return '맑음';
+    case '3': return '구름 많음';
+    case '4': return '흐림';
+    default: return '정보 없음';
+  }
+}
+
+String ptyStatus(String code) {
+  switch (code) {
+    case '0': return '없음';
+    case '1': return '비';
+    case '2': return '비/눈';
+    case '3': return '눈';
+    case '4': return '소나기';
+    default: return '정보 없음';
   }
 }
