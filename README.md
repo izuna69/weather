@@ -4,11 +4,26 @@
 종료일: 06/29/2025
 담당자: 김진영
 
+
+
 ### 디자인 툴 - [피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
 
-### 프로젝트 계획서 - [노션](https://www.notion.so/1f74f7ca3dd980e2bb0cccf60cc1106b?pvs=4)
+### 프로젝트 계획서 - [노션](https://www.notion.so/1fa4f7ca3dd9814ca017db686fb3501c?pvs=4)
 
-### 프로젝트 진행도 - [간트차트](https://www.notion.so/1f74f7ca3dd980519c2dee035e1325bd?v=1f74f7ca3dd98083bdc0000c4a96721a&pvs=4)
+### 프로젝트 진행도 - [간트차트](https://www.notion.so/1fa4f7ca3dd9806ea3a8f954c73a61cb?v=1fa4f7ca3dd981429a1c000c4c265773&pvs=4)
+
+---
+
+### 🚀 릴리스 정보
+
+[+모든 릴리스](https://github.com/izuna69/weather/releases/tag/Main)
+
+| 버전   | 일자        | 주요 변경 사항                                                                 | 다운로드 |
+|--------|-------------|----------------------------------------------------------------------------------|-----------|
+| 0.2.1  | 2025-06-02  | **홈 화면 위젯 기능 추가**<br>날씨 정보가 바탕화면 위젯에 표시됨                            | [📦 APK 다운로드](https://github.com/izuna69/weather/releases/download/v0.2.1/app-release_0.2.1.apk) |
+| 0.2.0  | 2025-06-01  | **로컬 영속 저장 기능** 추가<br>즐겨찾기 지역이 앱을 껐다 켜도 유지됨                   | [📦 APK 다운로드](https://github.com/izuna69/weather/releases/download/0.2.0/app-release_0.2.0.apk) |
+| 0.1.1  | 2025-05-25  | 위치 기반 날씨, 미세먼지 정보, 시간별 예보, 주간 예보, 지역 즐겨찾기 기능 포함             | [📦 APK 다운로드](https://github.com/izuna69/weather/releases/download/Main/app-release_0.1.1.zip) |
+
 
 
 ### 🧾 프로젝트 소개
@@ -19,7 +34,8 @@
 - 시간대별 기상 예보 (아이콘 포함)
 - 미세먼지(PM10) 및 초미세먼지(PM2.5) 수치
 - 지역 즐겨찾기 및 저장 기능
-- 최근 지역 저장
+- 영속성 로컬스토리지 기능추가
+
 
 ### 🎯 개발 목적
 
@@ -41,10 +57,15 @@
 - **Flutter** (Dart)
 - **Geolocator**, **permission_handler** (위치 권한 처리)
 - **http** (API 통신)
-- **기상청 초단기 실황 및 예보 API**
-- **환경부 대기질 API**
-- **Flask KoBART**
-- **Node.js 서버**
+- **Python**
+- **Node.js**
+
+### 🌐 API
+
+- [기상청 초단기예보 공공데이터](https://www.data.go.kr/iim/api/selectAPIAcountView.do)
+- Hugging Face Space 요약 
+- Flask KoBART
+- 환경부 대기질
 
 ### 
 
