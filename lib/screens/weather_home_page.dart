@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../services/weather_service.dart';
 import '../services/dust_service.dart';
 import '../services/convert_to_grid.dart';
 import '../services/weather_comment_service.dart';
 import '../services/weekly_rain_service.dart';
+import '../services/favorite_service.dart';
+
 import '../widgets/drawer_menu.dart';
 import '../widgets/hourly_forecast_bar.dart';
 import '../widgets/weather_info_row.dart';
 import '../widgets/weekly_rain_widget.dart';
+
 import '../models/hourly_forecast.dart';
 import '../utils/region_grid_map.dart';
 
@@ -41,6 +46,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
   @override
   void initState() {
     super.initState();
+    loadSavedRegions();
     fetchAllData();
 
     _controller = AnimationController(
@@ -54,10 +60,31 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
+  Future<void> loadSavedRegions() async {
+    savedRegions = await FavoriteService.loadFavorites();
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<bool> requestLocationPermission() async {
+    final status = await Permission.location.request();
+    if (status.isGranted) return true;
+    if (status.isPermanentlyDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('설정에서 위치 권한을 허용해주세요.')),
+      );
+      await openAppSettings();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('위치 권한이 없으면 날씨 정보를 사용할 수 없습니다.')),
+      );
+    }
+    return false;
   }
 
   void fetchAllData() async {
@@ -75,7 +102,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       String sido;
 
       if (selectedRegion == '내 위치') {
-        await Permission.location.request();
+        final granted = await requestLocationPermission();
+        if (!granted) return;
         final pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
         final grid = convertToGrid(pos.latitude, pos.longitude);
         nx = grid['nx']!;
@@ -114,6 +142,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       setState(() {
         savedRegions.add(region);
       });
+      FavoriteService.saveFavorites(savedRegions);
     }
   }
 
@@ -122,6 +151,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
       savedRegions.remove(region);
       pinnedRegions.remove(region);
     });
+    FavoriteService.saveFavorites(savedRegions);
   }
 
   void onRegionSelected(String region) {
@@ -160,7 +190,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> with SingleTickerProv
     if (pty == '1') return Icons.water_drop;
     if (pty == '2' || pty == '3') return Icons.ac_unit;
     if (pty == '4') return Icons.grain;
-
     switch (sky) {
       case '1': return Icons.wb_sunny;
       case '3': return Icons.cloud_queue;
