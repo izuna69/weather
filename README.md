@@ -2,13 +2,13 @@
 
 시작일: 05/11/2025
 종료일: 06/29/2025
-담당자: 김진영
+담당자: 김진영  
 
 
 
-### 디자인 툴 - [피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1)
+### 디자인 툴 - [피그마](https://www.figma.com/design/ttHZrIvWEsbmKpuHlHbROI/Weather?node-id=8-33&t=z0YeE2T4QWUhpgm8-1) 
 
-### 프로젝트 계획서 - [노션](https://www.notion.so/1fa4f7ca3dd9814ca017db686fb3501c?pvs=4)
+### 프로젝트 계획서 - [노션](https://www.notion.so/1fa4f7ca3dd9814ca017db686fb3501c?pvs=4)  평가해주실 파일입니다.
 
 ### 프로젝트 진행도 - [간트차트](https://www.notion.so/1fa4f7ca3dd9806ea3a8f954c73a61cb?v=1fa4f7ca3dd981429a1c000c4c265773&pvs=4)
 
