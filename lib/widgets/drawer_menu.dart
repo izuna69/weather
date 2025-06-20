@@ -55,7 +55,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
             const Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                '📍 지역 관리',
+                '지역 관리',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),

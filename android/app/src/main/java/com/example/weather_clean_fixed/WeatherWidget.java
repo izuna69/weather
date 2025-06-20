@@ -22,7 +22,7 @@ public class WeatherWidget extends AppWidgetProvider {
             PendingIntent pendingIntent = PendingIntent.getActivity(
                     context, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
             );
-            views.setOnClickPendingIntent(R.id.widget_text, pendingIntent); // ← 터치 이벤트 등록
+            views.setOnClickPendingIntent(R.id.widget_text, pendingIntent); //
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }

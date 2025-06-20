@@ -5,7 +5,7 @@ import '../models/hourly_forecast.dart';
 import '../utils/region_grid_map.dart';
 
 Future<Map<String, String>> fetchWeatherData({required int nx, required int ny}) async {
-  const String serviceKey = 't%2FhBRyIamJhuAVC5SzI2Th5gsPlEaNNymYeEoeDtHWPw71H3otVavsztRJtteMXG8OgxnJAnSQhcc%2FbFmDrqNA%3D%3D'; //니 토큰 넣어야 함
+  const String serviceKey = 't%2FhBRyIamJhuAVC5SzI2Th5gsPlEaNNymYeEoeDtHWPw71H3otVavsztRJtteMXG8OgxnJAnSQhcc%2FbFmDrqNA%3D%3D'; //토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰
   final DateTime now = DateTime.now();
 
   final cutoff = now.subtract(const Duration(minutes: 45));
