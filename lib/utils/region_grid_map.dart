@@ -9,4 +9,6 @@ const Map<String, Map<String, int>> regionGridMap = {
   '울산': {'nx': 102, 'ny': 84},
   '세종': {'nx': 66, 'ny': 103},
   '제주': {'nx': 52, 'ny': 38},
+  '제주2': {'nx': 52, 'ny': 38},
+
 };

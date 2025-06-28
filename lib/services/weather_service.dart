@@ -90,7 +90,7 @@ Future<List<HourlyForecast>> fetchHourlyForecast({required int nx, required int 
         '&base_date=$baseDate&base_time=$baseTime&nx=$nx&ny=$ny',
   );
 
-  print("📡 시간별 예보 요청 URL: $url");
+  print("예보 요청 디버깅용 URL: $url");
 
   final response = await http.get(url);
 
