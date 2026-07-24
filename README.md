@@ -76,3 +76,8 @@
 - 중단일: 2025년 6월 23일
 - 상태: 개발 중단
 - 사유: 목표기능 완성
+
+
+
+<img width="826" height="760" alt="665" src="https://github.com/user-attachments/assets/7c1b6b3e-870f-43f1-9c82-1d241801cd53" />
+
