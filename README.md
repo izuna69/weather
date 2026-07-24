@@ -79,5 +79,4 @@
 
 
 
-<img width="826" height="760" alt="665" src="https://github.com/user-attachments/assets/7c1b6b3e-870f-43f1-9c82-1d241801cd53" />
 
